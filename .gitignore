@@ -115,3 +115,8 @@ gen
 
 # Project exclude paths
 /target/
+
+*.cmd
+.mvn
+mvnw
+mvnw.cmd
