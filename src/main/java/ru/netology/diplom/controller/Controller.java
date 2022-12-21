@@ -18,10 +18,10 @@ public class Controller {
         return "Welcome to Cloud Storage";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/cloud")
     @RolesAllowed({"ROLE_USER","ROLE_ADMIN"})
     public String read() {
-        return "test";
+        return "cloud";
     }
 }
 

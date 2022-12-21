@@ -31,6 +31,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/registration").permitAll()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll();
+                .antMatchers("/uploadFile").permitAll()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .and()
+                .csrf()
+                .disable();
     }
 }

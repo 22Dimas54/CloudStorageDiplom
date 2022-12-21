@@ -6,19 +6,28 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import ru.netology.diplom.entity.StorageFile;
 import ru.netology.diplom.entity.User;
 import ru.netology.diplom.repository.RoleRepository;
+import ru.netology.diplom.repository.StorageFileRepository;
 import ru.netology.diplom.repository.UserRepository;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Date;
 
 @Service
 public class UserService implements UserDetailsService {
-
+    private final Path root = Paths.get("uploads");
     @Autowired
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    StorageFileRepository storageFileRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     private final String REGISTRATION_ROLE = "ROLE_USER";
@@ -45,5 +54,19 @@ public class UserService implements UserDetailsService {
         user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
         return true;
+    }
+
+    public String uploadFile(MultipartFile file) {
+        if (!file.isEmpty()) {
+            try {
+                Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+                storageFileRepository.save(new StorageFile(file.getOriginalFilename(),file.getSize(), new Date()));
+                return "Вы удачно загрузили " + file.getOriginalFilename() + " !";
+            } catch (Exception e) {
+                return "Вам не удалось загрузить " + file.getOriginalFilename() + " => " + e.getMessage();
+            }
+        } else {
+            return "Вам не удалось загрузить " + file.getOriginalFilename() + " потому что файл пустой.";
+        }
     }
 }
