@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -60,13 +61,31 @@ public class UserService implements UserDetailsService {
         if (!file.isEmpty()) {
             try {
                 Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
-                storageFileRepository.save(new StorageFile(file.getOriginalFilename(),file.getSize(), new Date()));
+                storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date()));
                 return "Вы удачно загрузили " + file.getOriginalFilename() + " !";
             } catch (Exception e) {
                 return "Вам не удалось загрузить " + file.getOriginalFilename() + " => " + e.getMessage();
             }
         } else {
             return "Вам не удалось загрузить " + file.getOriginalFilename() + " потому что файл пустой.";
+        }
+    }
+
+    public Object showAllFiles() {
+        return storageFileRepository.findBy();
+    }
+
+    public String deleteFile(Long id) {
+        if (storageFileRepository.existsById(id)) {
+            try {
+                storageFileRepository.deleteById(id);
+                return String.format("The file with the ID %s has been successfully deleted", id);
+            } catch (Exception e) {
+                return String.format("File with id %s could not be deleted", id);
+            }
+
+        } else {
+            return String.format("File with ID %s not found", id);
         }
     }
 }
