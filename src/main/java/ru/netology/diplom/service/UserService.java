@@ -1,6 +1,7 @@
 package ru.netology.diplom.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +14,9 @@ import ru.netology.diplom.repository.RoleRepository;
 import ru.netology.diplom.repository.StorageFileRepository;
 import ru.netology.diplom.repository.UserRepository;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,7 +26,7 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-    private final Path root = Paths.get("uploads");
+    private final Path root = Paths.get("storage");
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -78,6 +82,8 @@ public class UserService implements UserDetailsService {
     public String deleteFile(Long id) {
         if (storageFileRepository.existsById(id)) {
             try {
+                Path fileToDeletePath = Paths.get(root + File.separator + storageFileRepository.findById(id).get().getName());
+                Files.delete(fileToDeletePath);
                 storageFileRepository.deleteById(id);
                 return String.format("The file with the ID %s has been successfully deleted", id);
             } catch (Exception e) {
@@ -86,6 +92,20 @@ public class UserService implements UserDetailsService {
 
         } else {
             return String.format("File with ID %s not found", id);
+        }
+    }
+
+    public Optional<StorageFile> findById(Long id) {
+        return storageFileRepository.findById(id);
+    }
+
+    public InputStreamResource download(String name) throws IOException {
+        File file = new File(root + File.separator + name);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            throw new IOException();
         }
     }
 }

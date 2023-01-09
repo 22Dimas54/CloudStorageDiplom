@@ -31,10 +31,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/registration").permitAll()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/uploadFile").permitAll()
+                .antMatchers("/login").permitAll()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/get").permitAll()
                 .and()
                 .csrf()
                 .disable();

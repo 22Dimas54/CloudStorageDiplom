@@ -5,7 +5,6 @@ import ru.netology.diplom.entity.StorageFile;
 
 import java.util.List;
 
-
 public interface StorageFileRepository extends JpaRepository<StorageFile, Long> {
     List<StorageFile> findBy();
 
