@@ -2,6 +2,8 @@ package ru.netology.diplom.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -79,19 +81,19 @@ public class UserService implements UserDetailsService {
         return storageFileRepository.findBy();
     }
 
-    public String deleteFile(Long id) {
+    public ResponseEntity<Void> deleteFile(Long id) {
         if (storageFileRepository.existsById(id)) {
             try {
                 Path fileToDeletePath = Paths.get(root + File.separator + storageFileRepository.findById(id).get().getName());
                 Files.delete(fileToDeletePath);
                 storageFileRepository.deleteById(id);
-                return String.format("The file with the ID %s has been successfully deleted", id);
+                return new ResponseEntity<>(HttpStatus.OK);
             } catch (Exception e) {
-                return String.format("File with id %s could not be deleted", id);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         } else {
-            return String.format("File with ID %s not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
