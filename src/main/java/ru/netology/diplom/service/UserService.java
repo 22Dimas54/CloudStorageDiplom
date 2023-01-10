@@ -110,4 +110,17 @@ public class UserService implements UserDetailsService {
             throw new IOException();
         }
     }
+
+    public StorageFile putFile(Long id, String name) {
+        Optional<StorageFile> foundStorageFile = storageFileRepository.findById(id);
+        StorageFile storageFile = foundStorageFile.get();
+        File oldFile = new File(root + File.separator + storageFile.getName());
+        File newFile = new File(root + File.separator + name);
+        if (oldFile.renameTo(newFile)) {
+            storageFile.setName(name);
+            storageFile.setChangeDate(new Date());
+            storageFileRepository.save(storageFile);
+        }
+        return storageFile;
+    }
 }
