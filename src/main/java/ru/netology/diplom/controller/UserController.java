@@ -26,6 +26,9 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return "Welcome to Cloud Storage " + auth.getName();
     }
-
+//    @PostMapping("/login")
+//    public String login() {
+//        return "Welcome to Cloud Storage";
+//    }
 }
 
