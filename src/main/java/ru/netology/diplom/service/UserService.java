@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -77,7 +78,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public Object showAllFiles() {
+    public List<StorageFile> showAllFiles() {
         return storageFileRepository.findBy();
     }
 
