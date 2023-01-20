@@ -35,4 +35,5 @@ public class StorageFile {
         this.size = size;
         this.changeDate = changeDate;
     }
+
 }

@@ -112,8 +112,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public StorageFile putFile(Long id, String name) {
+    public Object putFile(Long id, String name) {
         Optional<StorageFile> foundStorageFile = storageFileRepository.findById(id);
+        if (foundStorageFile.isEmpty()){
+            return new ResponseEntity<StorageFile>(HttpStatus.NOT_FOUND);
+        }
         StorageFile storageFile = foundStorageFile.get();
         File oldFile = new File(root + File.separator + storageFile.getName());
         File newFile = new File(root + File.separator + name);
@@ -123,5 +126,9 @@ public class UserService implements UserDetailsService {
             storageFileRepository.save(storageFile);
         }
         return storageFile;
+    }
+
+    public String show() {
+        return "test";
     }
 }

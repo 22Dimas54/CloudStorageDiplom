@@ -29,9 +29,8 @@ public class AdminController {
 
     @PutMapping("/put/{id}")
     @RolesAllowed({"ROLE_ADMIN"})
-    public StorageFile updateUser(@PathVariable Long id, @RequestBody String name) {
-        StorageFile storageFile = userService.putFile(id, name);
-        return storageFile;
+    public Object putFile(@PathVariable Long id, @RequestBody String name) {
+        return userService.putFile(id, name);
     }
 
     @PostMapping("/file")
@@ -43,7 +42,7 @@ public class AdminController {
     @GetMapping("/list")
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public List<StorageFile> showAllFiles() {
-        return (List<StorageFile>) userService.showAllFiles();
+        return userService.showAllFiles();
     }
 
     @GetMapping(path = "/get/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

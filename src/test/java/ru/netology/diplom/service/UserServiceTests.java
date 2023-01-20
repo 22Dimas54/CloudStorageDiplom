@@ -14,7 +14,6 @@ import ru.netology.diplom.entity.StorageFile;
 import ru.netology.diplom.repository.StorageFileRepository;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class UserServiceTests {
     @Mock
     StorageFileRepository storageFileRepository;
     private final Long ID = 1L;
-    private final StorageFile storageFile = new StorageFile(ID, "test", ID, new Date());
+    private final StorageFile storageFile = Mockito.mock(StorageFile.class);
 
     @BeforeAll
     public static void started() {
@@ -64,7 +63,7 @@ public class UserServiceTests {
     @Test
     void testPutFile() {
         Mockito.when(storageFileRepository.findById(1L)).thenReturn(Optional.ofNullable(storageFile));
-        StorageFile Actual = userService.putFile(ID, "");
+        var Actual =  userService.putFile(ID, "");
         assertEquals(storageFile, Actual);
         Mockito.verify(storageFileRepository, Mockito.times(1)).findById(ID);
         Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);
