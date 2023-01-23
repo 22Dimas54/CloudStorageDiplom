@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.diplom.entity.StorageFile;
 import ru.netology.diplom.service.UserService;
@@ -21,9 +20,7 @@ import ru.netology.diplom.service.UserService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,7 +39,7 @@ public class AdminControllerTests {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "ROLE_ADMIN" })
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     public void testShowAllFiles() throws Exception {
         List<StorageFile> storageFiles = new ArrayList<>();
         var storageFile = StorageFile.builder()
@@ -60,7 +57,7 @@ public class AdminControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "ROLE_ADMIN" })
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     public void testDeleteFile() throws Exception {
         given(this.userService.deleteFile(1L)).willReturn(new ResponseEntity<>(HttpStatus.OK));
         this.mvc.perform(delete("/delete/1")
@@ -68,8 +65,8 @@ public class AdminControllerTests {
                 .andExpect(status().isOk());
     }
 
-     @Test
-    @WithMockUser(username = "admin", authorities = { "ROLE_ADMIN" })
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     public void testPutFile() throws Exception {
         var storageFile = StorageFile.builder()
                 .id(ID)
@@ -83,14 +80,14 @@ public class AdminControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-//    @Test
-//    @WithMockUser(username = "admin", authorities = { "ROLE_ADMIN" })
-//    public void testUploadFile() throws Exception{
-//        given(this.userService.uploadFile(Mockito.mock(MultipartFile.class))).willReturn("Вам не удалось загрузить null => null");
-//        this.mvc.perform(post("/file")
-//                .accept(MediaType.ALL))
-//                .andExpect(status().isOk())
-//                .andExpect(content()
-//                .string("Вам не удалось загрузить null => null"));
-//    }
+    @Test
+    @WithMockUser(username = "admin", authorities = { "ROLE_ADMIN" })
+    public void testUploadFile() throws Exception{
+        given(this.userService.uploadFile(Mockito.mock(MultipartFile.class))).willReturn("Вам не удалось загрузить null => null");
+        this.mvc.perform(post("/file")
+                .accept(MediaType.ALL))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                .string("Вам не удалось загрузить null => null"));
+    }
 }
