@@ -35,7 +35,7 @@ public class AdminController {
 
     @PostMapping("/file")
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         return userService.uploadFile(file);
     }
 
@@ -61,4 +61,6 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
 }

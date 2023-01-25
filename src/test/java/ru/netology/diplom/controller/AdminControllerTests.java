@@ -3,17 +3,17 @@ package ru.netology.diplom.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
 import org.junit.runner.*;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.*;
 import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.netology.diplom.entity.StorageFile;
 import ru.netology.diplom.service.UserService;
 
@@ -80,14 +80,15 @@ public class AdminControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
     @Test
-    @WithMockUser(username = "admin", authorities = { "ROLE_ADMIN" })
-    public void testUploadFile() throws Exception{
-        given(this.userService.uploadFile(Mockito.mock(MultipartFile.class))).willReturn("Вам не удалось загрузить null => null");
-        this.mvc.perform(post("/file")
-                .accept(MediaType.ALL))
-                .andExpect(status().isOk())
-                .andExpect(content()
-                .string("Вам не удалось загрузить null => null"));
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    public void testUploadFile() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "test content".getBytes());
+
+        this.mvc.perform(MockMvcRequestBuilders.fileUpload("/file")
+                .file(multipartFile))
+                .andExpect(status().isOk());
     }
 }

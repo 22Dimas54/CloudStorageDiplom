@@ -64,17 +64,17 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public String uploadFile(MultipartFile file) {
+    public ResponseEntity<String> uploadFile(MultipartFile file) {
         if (!file.isEmpty()) {
             try {
                 Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
                 storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date()));
-                return "Вы удачно загрузили " + file.getOriginalFilename() + " !";
+                return new ResponseEntity("" + "File:" + file.getOriginalFilename()+ " uploaded successfully", HttpStatus.OK);
             } catch (Exception e) {
-                return "Вам не удалось загрузить " + file.getOriginalFilename() + " => " + e.getMessage();
+                return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
             }
         } else {
-            return "Вам не удалось загрузить " + file.getOriginalFilename() + " потому что файл пустой.";
+            return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
         }
     }
 
