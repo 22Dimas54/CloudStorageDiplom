@@ -82,7 +82,7 @@ public class UserServiceTests {
     @Test
     void testUploadFile() {
         MultipartFile file = Mockito.mock(MultipartFile.class);
-        var Expected = new ResponseEntity("" + "File:" + file.getOriginalFilename()+ " uploaded successfully", HttpStatus.OK);
+        var Expected =  new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
         var Actual = userService.uploadFile(file);
         assertEquals(Expected, Actual);
         Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);

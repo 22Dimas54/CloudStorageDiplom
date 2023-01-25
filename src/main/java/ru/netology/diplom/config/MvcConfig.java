@@ -15,11 +15,11 @@ public class MvcConfig implements WebMvcConfigurer {
         return new BCryptPasswordEncoder();
     }
 
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowCredentials(true)
-//                .allowedOrigins("http://192.168.78.0:8081")
-//                .allowedMethods("*");
-//    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowCredentials(true)
+                .allowedOrigins("http://192.168.78.0:8081")
+                .allowedMethods("*");
+    }
 }
