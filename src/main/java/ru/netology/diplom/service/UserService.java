@@ -127,8 +127,4 @@ public class UserService implements UserDetailsService {
         }
         return storageFile;
     }
-
-    public String show() {
-        return "test";
-    }
 }

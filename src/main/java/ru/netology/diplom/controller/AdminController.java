@@ -62,5 +62,8 @@ public class AdminController {
         }
     }
 
-
+    @PostMapping("/login")
+    public String login() {
+        return "Welcome to Cloud Storage";
+    }
 }
