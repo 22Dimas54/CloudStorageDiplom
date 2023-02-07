@@ -20,6 +20,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedOrigins("http://192.168.78.0:8081")
+                .allowedOrigins("http://localhost:8081")
                 .allowedMethods("*");
     }
 }
