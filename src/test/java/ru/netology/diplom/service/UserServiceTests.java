@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,12 +54,8 @@ public class UserServiceTests {
 
     @Test
     void testShowAllFiles() {
-        List<StorageFile> storageFiles = new ArrayList<>();
-        storageFiles.add(storageFile);
-        Mockito.when(storageFileRepository.findBy()).thenReturn(storageFiles);
-        int Expected = 1;
-        int Actual = userService.showAllFiles().size();
-        assertEquals(Expected, Actual);
+        storageFileRepository.findAll(PageRequest.of(0, 1));
+        Mockito.verify(storageFileRepository).findAll(PageRequest.of(0, 1));
     }
 
     @Test

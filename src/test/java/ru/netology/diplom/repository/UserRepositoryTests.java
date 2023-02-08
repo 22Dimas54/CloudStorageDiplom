@@ -44,6 +44,6 @@ public class UserRepositoryTests extends DatabaseTest {
     @Test
     void testFindBy() {
         var Actual = userRepository.findByUserName(user.getUsername());
-        assertEquals(user.getUsername(), Actual.getUsername());
+        assertEquals(user.getUsername(), Actual.get().getUsername());
     }
 }

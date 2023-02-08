@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.*;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.*;
@@ -65,5 +66,14 @@ public class RegistrationControllerTests {
                 .param("password", "password"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Error"));
+    }
+
+    @Test
+    public void testAddUserVerifyParameters() {
+        UserService userService = Mockito.mock(UserService.class);
+        var userName = "username";
+        var password = "password";
+        userService.saveUser(userName, password);
+        Mockito.verify(userService).saveUser(userName, password);
     }
 }

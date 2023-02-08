@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -58,8 +59,8 @@ public class AdminController {
 
     @GetMapping("/list")
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public List<StorageFile> showAllFiles() {
-        return userService.showAllFiles();
+    public List<StorageFile> showAllFiles(@RequestParam("limit") Integer limit) {
+        return userService.showAllFiles(limit);
     }
 
     @GetMapping(path = "/get/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -81,28 +82,27 @@ public class AdminController {
 
     @PostMapping("/login")
     public JSONObject login(@RequestBody @Valid JSONObject requestBody) throws JsonProcessingException {
-        var username = requestBody.get("login")==null?requestBody.get("username"):requestBody.get("login");
-        var authentication =
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(username, requestBody.get("password")));
-        var user = (User) authentication.getPrincipal();
-        var now = Instant.now();
-        var expiry = 36000L;
-        var scope =
-                authentication.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(joining(" "));
-        var claims =
-                JwtClaimsSet.builder()
-                        .issuer("example.io")
-                        .issuedAt(now)
-                        .expiresAt(now.plusSeconds(expiry))
-                        .subject(format("%s,%s", user.getId(), user.getUsername()))
-                        .claim("roles", scope)
-                        .build();
-        var token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-        JSONObject jsonObj = new JSONObject();
-        jsonObj.put("auth-token", token);
-        return jsonObj;
+            var authentication =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(requestBody.get("login"), requestBody.get("password")));
+            var user = (User) authentication.getPrincipal();
+            var now = Instant.now();
+            var expiry = 36000L;
+            var scope =
+                    authentication.getAuthorities().stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .collect(joining(" "));
+            var claims =
+                    JwtClaimsSet.builder()
+                            .issuer("example.io")
+                            .issuedAt(now)
+                            .expiresAt(now.plusSeconds(expiry))
+                            .subject(format("%s,%s", user.getId(), user.getUsername()))
+                            .claim("roles", scope)
+                            .build();
+            var token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("auth-token", token);
+            return jsonObj;
     }
 }

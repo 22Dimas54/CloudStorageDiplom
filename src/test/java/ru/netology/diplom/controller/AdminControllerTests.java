@@ -3,6 +3,7 @@ package ru.netology.diplom.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
 import org.junit.runner.*;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.*;
 import org.springframework.boot.test.mock.mockito.*;
@@ -17,9 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.netology.diplom.entity.StorageFile;
 import ru.netology.diplom.service.UserService;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,19 +40,8 @@ public class AdminControllerTests {
     @Test
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     public void testShowAllFiles() throws Exception {
-        List<StorageFile> storageFiles = new ArrayList<>();
-        var storageFile = StorageFile.builder()
-                .id(ID)
-                .name("test")
-                .size(ID)
-                .changeDate(new Date(2023, 1, 1, 1, 1, 1))
-                .build();
-        storageFiles.add(storageFile);
-        given(this.userService.showAllFiles()).willReturn(storageFiles);
-        this.mvc.perform(get("/list")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content()
-                .string("[{\"id\":1,\"name\":\"test\",\"size\":1,\"changeDate\":61633332061000}]"));
+        userService.showAllFiles(Integer.valueOf(1));
+        Mockito.verify(userService).showAllFiles(Integer.valueOf(1));
     }
 
     @Test

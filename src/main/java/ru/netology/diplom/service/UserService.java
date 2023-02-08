@@ -2,6 +2,7 @@ package ru.netology.diplom.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,17 +43,17 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(username);
-        if (user == null) {
+        Optional<User> user = userRepository.findByUserName(username);
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return user;
+        return user.get();
     }
 
     public boolean saveUser(String userName, String password) {
-        User userFromDB = userRepository.findByUserName(userName);
+        Optional<User> userFromDB = userRepository.findByUserName(userName);
 
-        if (userFromDB != null) {
+        if (!userFromDB.isPresent()) {
             return false;
         }
 
@@ -78,8 +79,8 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<StorageFile> showAllFiles() {
-        return storageFileRepository.findBy();
+    public List<StorageFile> showAllFiles(Integer limit) {
+          return storageFileRepository.findAll(PageRequest.of(0, limit)).getContent();
     }
 
     public ResponseEntity<Void> deleteFile(Long id) {

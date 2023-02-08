@@ -1,5 +1,7 @@
 package ru.netology.diplom.config;
 
+import static java.lang.String.format;
+
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -56,9 +58,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         username ->
                                 userRepository
                                         .findByUserName(username)
-//                                        .orElseThrow(
-//                                                () ->
-//                                                        new UsernameNotFoundException(format("User: %s, not found", username)))
+                                        .orElseThrow(
+                                                () ->
+                                                        new UsernameNotFoundException(format("User: %s, not found", username)))
                                                         )
                 .passwordEncoder(bCryptPasswordEncoder)
                 .and()
@@ -77,6 +79,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/cloud").permitAll()
                 .and()
                 .csrf()
                 .disable()
