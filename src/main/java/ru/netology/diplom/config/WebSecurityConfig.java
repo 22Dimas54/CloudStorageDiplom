@@ -6,22 +6,29 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import ru.netology.diplom.repository.UserRepository;
 import ru.netology.diplom.service.UserService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
@@ -40,9 +47,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private RSAPublicKey rsaPublicKey;
     @Value("${jwt.private.key}")
     private RSAPrivateKey rsaPrivateKey;
+
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+//        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(username -> userRepository
+                .findByUserName(username)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException(
+                                format("User: %s, not found", username)
+                        )
+                ));
     }
     @Bean
     public JwtEncoder jwtEncoder() {
@@ -61,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                         .orElseThrow(
                                                 () ->
                                                         new UsernameNotFoundException(format("User: %s, not found", username)))
-                                                        )
+                )
                 .passwordEncoder(bCryptPasswordEncoder)
                 .and()
                 .build();

@@ -99,10 +99,14 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public Optional<StorageFile> findById(Long id) {
-        return storageFileRepository.findById(id);
-    }
+//    public Optional<StorageFile> findById(Long id) {
+//
+//        return storageFileRepository.findById(id);
+//    }
+public StorageFile findById(String filename) {
 
+    return storageFileRepository.findByName( filename);
+}
     public InputStreamResource download(String name) throws IOException {
         File file = new File(root + File.separator + name);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
