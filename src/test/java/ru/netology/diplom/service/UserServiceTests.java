@@ -58,29 +58,29 @@ public class UserServiceTests {
         Mockito.verify(storageFileRepository).findAll(PageRequest.of(0, 1));
     }
 
-//    @Test
-//    void testPutFile() {
-//        Mockito.when(storageFileRepository.findById(1L)).thenReturn(Optional.ofNullable(storageFile));
-//        var Actual =  userService.putFile(ID, "");
-//        assertEquals(storageFile, Actual);
-//        Mockito.verify(storageFileRepository, Mockito.times(1)).findById(ID);
-//        Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);
-//    }
+    @Test
+    void testPutFile() {
+        Mockito.when(storageFileRepository.findByName("")).thenReturn(storageFile);
+        var Actual = userService.putFile("", "");
+        assertEquals(new ResponseEntity<StorageFile>(HttpStatus.OK), Actual);
+        Mockito.verify(storageFileRepository, Mockito.times(1)).findByName("");
+        Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);
+    }
 
-//    @Test
-//    void testDeleteFile() {
-//        Mockito.when(storageFileRepository.existsById(1L)).thenReturn(false);
-//        var Actual = userService.deleteFile(ID);
-//        var Expected = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        assertEquals(Expected, Actual);
-//        Mockito.verify(storageFileRepository, Mockito.times(1)).existsById(ID);
-//        Mockito.verify(storageFileRepository, Mockito.times(0)).deleteById(ID);
-//    }
+    @Test
+    void testDeleteFile() {
+        Mockito.when(storageFileRepository.findByName("")).thenReturn(storageFile);
+        var Actual = userService.deleteFile("");
+        var Expected = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        assertEquals(Expected, Actual);
+        Mockito.verify(storageFileRepository, Mockito.times(1)).findByName("");
+        Mockito.verify(storageFileRepository, Mockito.times(0)).deleteById(ID);
+    }
 
     @Test
     void testUploadFile() {
         MultipartFile file = Mockito.mock(MultipartFile.class);
-        var Expected =  new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
+        var Expected = new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
         var Actual = userService.uploadFile(file);
         assertEquals(Expected, Actual);
         Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);

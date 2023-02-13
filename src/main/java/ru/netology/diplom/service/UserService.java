@@ -1,10 +1,13 @@
 package ru.netology.diplom.service;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,11 +54,9 @@ public class UserService implements UserDetailsService {
 
     public boolean saveUser(String userName, String password) {
         Optional<User> userFromDB = userRepository.findByUserName(userName);
-
         if (!userFromDB.isPresent()) {
             return false;
         }
-
         User user = new User();
         user.setRoles(Collections.singleton(roleRepository.findByName(REGISTRATION_ROLE)));
         user.setUserName(userName);
@@ -79,8 +79,20 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<StorageFile> showAllFiles(Integer limit) {
-        return storageFileRepository.findAll(PageRequest.of(0, limit)).getContent();
+    public ResponseEntity<JSONArray> showAllFiles(Integer limit) {
+        try {
+            var storageFiles = storageFileRepository.findAll(PageRequest.of(0, limit)).getContent();
+            JSONArray files = new JSONArray();
+            for (StorageFile storageFile : storageFiles) {
+                JSONObject file = new JSONObject();
+                file.put("filename", storageFile.getName());
+                file.put("size", (double) storageFile.getSize() / (1024 * 1024));
+                files.add(file);
+            }
+            return ResponseEntity.ok(files);
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     public ResponseEntity deleteFile(String filename) {
@@ -101,7 +113,6 @@ public class UserService implements UserDetailsService {
     }
 
     public StorageFile findByName(String filename) {
-
         return storageFileRepository.findByName(filename);
     }
 

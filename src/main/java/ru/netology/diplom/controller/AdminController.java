@@ -40,13 +40,13 @@ public class AdminController {
     private final JwtEncoder jwtEncoder;
 
     @DeleteMapping(value = "/file")
-    @RolesAllowed({"ROLE_ADMIN"})
+//    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity delete(@RequestParam("filename") String fileName) {
         return userService.deleteFile(fileName);
     }
 
     @PutMapping("/file")
-    @RolesAllowed({"ROLE_ADMIN"})
+//    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<StorageFile> putFile(@RequestParam("filename") String fileName, @RequestBody @Valid JSONObject requestBody) {
         try {
             return userService.putFile(fileName, (String) requestBody.get("filename"));
@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     @PostMapping("/file")
-    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
+//    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         return userService.uploadFile(file);
     }
@@ -64,23 +64,7 @@ public class AdminController {
     @GetMapping("/list")
 //    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<JSONArray> showAllFiles(@RequestParam("limit") Integer limit) {
-        try {
-            var storageFiles = userService.showAllFiles(limit);
-
-            JSONArray files = new JSONArray();
-            for (StorageFile storageFile : storageFiles) {
-                JSONObject file = new JSONObject();
-                file.put("filename", storageFile.getName());
-                file.put("data", storageFile.getChangeDate());
-                file.put("size", storageFile.getSize());
-                files.add(file);
-            }
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("files", files);
-            return ResponseEntity.ok(files);
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        return userService.showAllFiles(limit);
     }
 
     @GetMapping(path = "/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
