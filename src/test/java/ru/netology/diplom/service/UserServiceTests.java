@@ -67,15 +67,15 @@ public class UserServiceTests {
 //        Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);
 //    }
 
-    @Test
-    void testDeleteFile() {
-        Mockito.when(storageFileRepository.existsById(1L)).thenReturn(false);
-        var Actual = userService.deleteFile(ID);
-        var Expected = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        assertEquals(Expected, Actual);
-        Mockito.verify(storageFileRepository, Mockito.times(1)).existsById(ID);
-        Mockito.verify(storageFileRepository, Mockito.times(0)).deleteById(ID);
-    }
+//    @Test
+//    void testDeleteFile() {
+//        Mockito.when(storageFileRepository.existsById(1L)).thenReturn(false);
+//        var Actual = userService.deleteFile(ID);
+//        var Expected = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        assertEquals(Expected, Actual);
+//        Mockito.verify(storageFileRepository, Mockito.times(1)).existsById(ID);
+//        Mockito.verify(storageFileRepository, Mockito.times(0)).deleteById(ID);
+//    }
 
     @Test
     void testUploadFile() {

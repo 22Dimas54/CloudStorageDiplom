@@ -39,25 +39,25 @@ public class AdminController {
     private final AuthenticationManager authenticationManager;
     private final JwtEncoder jwtEncoder;
 
-    @DeleteMapping(value = "/delete/{id}")
-//    @RolesAllowed({"ROLE_ADMIN"})
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        return userService.deleteFile(id);
+    @DeleteMapping(value = "/file")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public ResponseEntity delete(@RequestParam("filename") String fileName) {
+        return userService.deleteFile(fileName);
     }
 
     @PutMapping("/file")
-//    @RolesAllowed({"ROLE_ADMIN"})
-    public ResponseEntity<StorageFile> putFile(@RequestParam("filename") String filename, @RequestBody @Valid JSONObject requestBody) {
+    @RolesAllowed({"ROLE_ADMIN"})
+    public ResponseEntity<StorageFile> putFile(@RequestParam("filename") String fileName, @RequestBody @Valid JSONObject requestBody) {
         try {
-            return userService.putFile(filename, (String) requestBody.get("filename"));
+            return userService.putFile(fileName, (String) requestBody.get("filename"));
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
     @PostMapping("/file")
-//    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         return userService.uploadFile(file);
     }
 
@@ -87,7 +87,7 @@ public class AdminController {
 //    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<InputStreamResource> download(@RequestParam("filename") String filename) {
         try {
-            var foundFile = userService.findById(filename);
+            var foundFile = userService.findByName(filename);
             InputStreamResource resource = null;
             if (foundFile != null) {
                 resource = userService.download(foundFile.getName());

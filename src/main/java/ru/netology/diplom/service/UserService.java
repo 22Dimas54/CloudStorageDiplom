@@ -65,17 +65,17 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public ResponseEntity<String> uploadFile(MultipartFile file) {
+    public ResponseEntity uploadFile(MultipartFile file) {
         if (!file.isEmpty()) {
             try {
                 Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
                 storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date()));
-                return new ResponseEntity("" + "File:" + file.getOriginalFilename() + " uploaded successfully", HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.OK);
             } catch (Exception e) {
-                return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -83,23 +83,24 @@ public class UserService implements UserDetailsService {
         return storageFileRepository.findAll(PageRequest.of(0, limit)).getContent();
     }
 
-    public ResponseEntity<Void> deleteFile(Long id) {
-        if (storageFileRepository.existsById(id)) {
+    public ResponseEntity deleteFile(String filename) {
+        var foundStorageFile = storageFileRepository.findByName(filename);
+        if (foundStorageFile != null) {
             try {
-                Path fileToDeletePath = Paths.get(root + File.separator + storageFileRepository.findById(id).get().getName());
+                Path fileToDeletePath = Paths.get(root + File.separator + foundStorageFile.getName());
                 Files.delete(fileToDeletePath);
-                storageFileRepository.deleteById(id);
-                return new ResponseEntity<>(HttpStatus.OK);
+                storageFileRepository.deleteById(foundStorageFile.getId());
+                return new ResponseEntity(HttpStatus.OK);
             } catch (Exception e) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
 
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
-    public StorageFile findById(String filename) {
+    public StorageFile findByName(String filename) {
 
         return storageFileRepository.findByName(filename);
     }
@@ -129,3 +130,4 @@ public class UserService implements UserDetailsService {
         return new ResponseEntity<StorageFile>(HttpStatus.OK);
     }
 }
+

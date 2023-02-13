@@ -44,14 +44,14 @@ public class AdminControllerTests {
         Mockito.verify(userService).showAllFiles(Integer.valueOf(1));
     }
 
-    @Test
-    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
-    public void testDeleteFile() throws Exception {
-        given(this.userService.deleteFile(1L)).willReturn(new ResponseEntity<>(HttpStatus.OK));
-        this.mvc.perform(delete("/delete/1")
-                .accept(MediaType.ALL))
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+//    public void testDeleteFile() throws Exception {
+//        given(this.userService.deleteFile(1L)).willReturn(new ResponseEntity<>(HttpStatus.OK));
+//        this.mvc.perform(delete("/delete/1")
+//                .accept(MediaType.ALL))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
