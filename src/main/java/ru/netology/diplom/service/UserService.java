@@ -70,7 +70,7 @@ public class UserService implements UserDetailsService {
             try {
                 Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
                 storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date()));
-                return new ResponseEntity("" + "File:" + file.getOriginalFilename()+ " uploaded successfully", HttpStatus.OK);
+                return new ResponseEntity("" + "File:" + file.getOriginalFilename() + " uploaded successfully", HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
             }
@@ -80,7 +80,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<StorageFile> showAllFiles(Integer limit) {
-          return storageFileRepository.findAll(PageRequest.of(0, limit)).getContent();
+        return storageFileRepository.findAll(PageRequest.of(0, limit)).getContent();
     }
 
     public ResponseEntity<Void> deleteFile(Long id) {
@@ -99,14 +99,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
-//    public Optional<StorageFile> findById(Long id) {
-//
-//        return storageFileRepository.findById(id);
-//    }
-public StorageFile findById(String filename) {
+    public StorageFile findById(String filename) {
 
-    return storageFileRepository.findByName( filename);
-}
+        return storageFileRepository.findByName(filename);
+    }
+
     public InputStreamResource download(String name) throws IOException {
         File file = new File(root + File.separator + name);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
@@ -117,19 +114,18 @@ public StorageFile findById(String filename) {
         }
     }
 
-    public Object putFile(Long id, String name) {
-        Optional<StorageFile> foundStorageFile = storageFileRepository.findById(id);
-        if (foundStorageFile.isEmpty()){
+    public ResponseEntity<StorageFile> putFile(String name, String putNameFile) {
+        var foundStorageFile = storageFileRepository.findByName(name);
+        if (foundStorageFile == null) {
             return new ResponseEntity<StorageFile>(HttpStatus.NOT_FOUND);
         }
-        StorageFile storageFile = foundStorageFile.get();
-        File oldFile = new File(root + File.separator + storageFile.getName());
-        File newFile = new File(root + File.separator + name);
+        File oldFile = new File(root + File.separator + foundStorageFile.getName());
+        File newFile = new File(root + File.separator + putNameFile);
         if (oldFile.renameTo(newFile)) {
-            storageFile.setName(name);
-            storageFile.setChangeDate(new Date());
-            storageFileRepository.save(storageFile);
+            foundStorageFile.setName(putNameFile);
+            foundStorageFile.setChangeDate(new Date());
+            storageFileRepository.save(foundStorageFile);
         }
-        return storageFile;
+        return new ResponseEntity<StorageFile>(HttpStatus.OK);
     }
 }

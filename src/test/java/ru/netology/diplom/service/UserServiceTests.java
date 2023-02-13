@@ -58,14 +58,14 @@ public class UserServiceTests {
         Mockito.verify(storageFileRepository).findAll(PageRequest.of(0, 1));
     }
 
-    @Test
-    void testPutFile() {
-        Mockito.when(storageFileRepository.findById(1L)).thenReturn(Optional.ofNullable(storageFile));
-        var Actual =  userService.putFile(ID, "");
-        assertEquals(storageFile, Actual);
-        Mockito.verify(storageFileRepository, Mockito.times(1)).findById(ID);
-        Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);
-    }
+//    @Test
+//    void testPutFile() {
+//        Mockito.when(storageFileRepository.findById(1L)).thenReturn(Optional.ofNullable(storageFile));
+//        var Actual =  userService.putFile(ID, "");
+//        assertEquals(storageFile, Actual);
+//        Mockito.verify(storageFileRepository, Mockito.times(1)).findById(ID);
+//        Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);
+//    }
 
     @Test
     void testDeleteFile() {

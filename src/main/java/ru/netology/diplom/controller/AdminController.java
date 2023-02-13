@@ -45,10 +45,14 @@ public class AdminController {
         return userService.deleteFile(id);
     }
 
-    @PutMapping("/put/{id}")
+    @PutMapping("/file")
 //    @RolesAllowed({"ROLE_ADMIN"})
-    public Object putFile(@PathVariable Long id, @RequestBody String name) {
-        return userService.putFile(id, name);
+    public ResponseEntity<StorageFile> putFile(@RequestParam("filename") String filename, @RequestBody @Valid JSONObject requestBody) {
+        try {
+            return userService.putFile(filename, (String) requestBody.get("filename"));
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/file")
@@ -56,6 +60,7 @@ public class AdminController {
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         return userService.uploadFile(file);
     }
+
     @GetMapping("/list")
 //    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<JSONArray> showAllFiles(@RequestParam("limit") Integer limit) {
@@ -84,7 +89,7 @@ public class AdminController {
         try {
             var foundFile = userService.findById(filename);
             InputStreamResource resource = null;
-            if (foundFile!=null) {
+            if (foundFile != null) {
                 resource = userService.download(foundFile.getName());
             }
             return ResponseEntity.ok()
