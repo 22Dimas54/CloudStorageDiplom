@@ -1,10 +1,12 @@
 package ru.netology.diplom.repository;
 
 import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import ru.netology.diplom.DatabaseTest;
 import ru.netology.diplom.entity.StorageFile;
+import ru.netology.diplom.entity.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class StorageFileRepositoryTests extends DatabaseTest {
     @Autowired
     StorageFileRepository storageFileRepository;
-    private final StorageFile storageFile = new StorageFile("test", 1L, new Date());
+    private final StorageFile storageFile = new StorageFile("test", 1L, new Date(), Mockito.mock(User.class));
 
     @BeforeAll
     public static void started() {

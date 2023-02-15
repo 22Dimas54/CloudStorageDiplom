@@ -1,23 +1,18 @@
 package ru.netology.diplom.service;
 
-import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.diplom.entity.StorageFile;
+import ru.netology.diplom.entity.User;
 import ru.netology.diplom.repository.StorageFileRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -79,9 +74,9 @@ public class UserServiceTests {
 
     @Test
     void testUploadFile() {
-        MultipartFile file = Mockito.mock(MultipartFile.class);
-        var Expected = new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
-        var Actual = userService.uploadFile(file);
+        var file = Mockito.mock(MultipartFile.class);
+        var Expected = new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+        var Actual = userService.uploadFile(file, Mockito.mock(User.class));
         assertEquals(Expected, Actual);
         Mockito.verify(storageFileRepository, Mockito.times(0)).save(storageFile);
     }

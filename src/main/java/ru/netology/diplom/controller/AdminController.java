@@ -53,7 +53,9 @@ public class AdminController {
     @PostMapping("/file")
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
-        return userService.uploadFile(file);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        var user = userService.findByUserName(auth.getName()).get();
+        return userService.uploadFile(file, user);
     }
 
     @GetMapping("/list")
@@ -62,7 +64,7 @@ public class AdminController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Welcome to Cloud Storage " + auth.getName());
         var user = userService.findByUserName(auth.getName()).get();
-        return userService.showAllFiles(limit);
+        return userService.showAllFiles(limit, user);
     }
 
     @GetMapping(path = "/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -103,6 +105,3 @@ public class AdminController {
 }
 ////admin
 ////write
-//cначала заходит в контроллер на маппинг /login, а потом , в JwtTokenFilter поэтому аутентификация не происходит. Как переопределить очередность?
-//
-//        Для аутентификации пользователя необходимо использовать два фильтра: для первоначального проверки пользователя используется контроллер /login, а для последующей проверки используется JwtTokenFilter. В первую очередь при получении запроса от пользователя, будет выполняться контроллер /login, в котором производится проверка переданных пользователем данных (логин/пароль/токен) и при необходимости будет отправлен запрос на получение токена. Затем токен будет передан в JwtTokenFilter для дальнейшей проверки.

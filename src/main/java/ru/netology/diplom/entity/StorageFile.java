@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.InputStream;
 import java.util.Date;
 
 
@@ -30,10 +29,15 @@ public class StorageFile {
     @Column
     private Date changeDate;
 
-    public StorageFile(String name, Long size, Date changeDate) {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public StorageFile(String name, Long size, Date changeDate,User user) {
         this.name = name;
         this.size = size;
         this.changeDate = changeDate;
+        this.user = user;
     }
 
 }

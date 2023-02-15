@@ -65,11 +65,11 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public ResponseEntity uploadFile(MultipartFile file) {
+    public ResponseEntity uploadFile(MultipartFile file, User user) {
         if (!file.isEmpty()) {
             try {
                 Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
-                storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date()));
+                storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date(),user));
                 return new ResponseEntity(HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -79,9 +79,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public ResponseEntity<JSONArray> showAllFiles(Integer limit) {
+    public ResponseEntity<JSONArray> showAllFiles(Integer limit, User user) {
         try {
-            var storageFiles = storageFileRepository.findAll(PageRequest.of(0, limit)).getContent();
+            var storageFiles = storageFileRepository.findAllByUser(PageRequest.of(0, limit),user);
             JSONArray files = new JSONArray();
             for (StorageFile storageFile : storageFiles) {
                 JSONObject file = new JSONObject();

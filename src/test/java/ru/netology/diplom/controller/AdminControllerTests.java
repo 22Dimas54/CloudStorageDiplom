@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.netology.diplom.entity.StorageFile;
+import ru.netology.diplom.entity.User;
 import ru.netology.diplom.service.UserService;
 
 import java.util.Date;
@@ -40,8 +41,8 @@ public class AdminControllerTests {
     @Test
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     public void testShowAllFiles() throws Exception {
-        userService.showAllFiles(Integer.valueOf(1));
-        Mockito.verify(userService).showAllFiles(Integer.valueOf(1));
+        userService.showAllFiles(Integer.valueOf(1),Mockito.mock(User.class));
+        Mockito.verify(userService).showAllFiles(Integer.valueOf(1),Mockito.mock(User.class));
     }
 
     @Test
