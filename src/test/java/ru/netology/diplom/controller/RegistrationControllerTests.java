@@ -28,7 +28,6 @@ public class RegistrationControllerTests {
     @MockBean
     private UserService userService;
 
-
     @BeforeAll
     public static void started() {
         System.out.println("tests started");
@@ -49,7 +48,6 @@ public class RegistrationControllerTests {
     public static void finishedAll() {
         System.out.println("tests finished");
     }
-
 
     @Test
     public void testAddUser() throws Exception {

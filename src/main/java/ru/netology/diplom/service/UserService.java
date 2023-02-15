@@ -140,5 +140,9 @@ public class UserService implements UserDetailsService {
         }
         return new ResponseEntity<StorageFile>(HttpStatus.OK);
     }
+
+    public Optional<User> findByUserName(String username){
+        return userRepository.findByUserName(username);
+    }
 }
 
