@@ -32,8 +32,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         // Get authorization header and validate
-//        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        final String header = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxLGFkbWluIiwiaXNzIjoiZXhhbXBsZS5pbyIsImlhdCI6MTY3NjQzNjc3NSwiZXhwIjoxNjc3MDQxNTc1fQ._X5U3aUr3coTZLMiOdhvG62AfXRHik8a02yH5NG6z1jQR5MJcBbBoQCXtpPoSfXHlHq2HwcyhYt3J_bmPUOoqg";
+        //To skip OncePerRequestFilter for authenticate endpoint
+        final String header = request.getHeader("auth-token");
+//      final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!hasText(header) || !header.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;

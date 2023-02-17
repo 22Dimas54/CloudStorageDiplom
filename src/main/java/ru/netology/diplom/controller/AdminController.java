@@ -62,7 +62,6 @@ public class AdminController {
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<JSONArray> showAllFiles(@RequestParam("limit") Integer limit) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Welcome to Cloud Storage " + auth.getName());
         var user = userService.findByUserName(auth.getName()).get();
         return userService.showAllFiles(limit, user);
     }
