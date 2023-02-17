@@ -84,7 +84,7 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid JSONObject requestBody) throws JsonProcessingException {
+    public ResponseEntity<Object> login(@RequestBody @Valid JSONObject requestBody) {
         try {
             var authentication =
                     authenticationManager.authenticate(

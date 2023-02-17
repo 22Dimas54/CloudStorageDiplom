@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserRepository userRepo;
     private final JwtTokenFilter jwtTokenFilter;
 
-    public SecurityConfig(UserRepository userRepo,JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfig(UserRepository userRepo, JwtTokenFilter jwtTokenFilter) {
         this.userRepo = userRepo;
         this.jwtTokenFilter = jwtTokenFilter;
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 // Our public endpoints
                 .antMatchers("/").permitAll()
-                .antMatchers( "/login").permitAll()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/registration").permitAll()
                 // Our private endpoints
                 .anyRequest().authenticated();

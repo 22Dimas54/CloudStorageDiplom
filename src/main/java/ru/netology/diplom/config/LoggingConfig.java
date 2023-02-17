@@ -23,5 +23,4 @@ public class LoggingConfig {
 
         throw new IllegalArgumentException();
     }
-
 }

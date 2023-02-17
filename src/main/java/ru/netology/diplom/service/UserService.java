@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService {
         if (!file.isEmpty()) {
             try {
                 Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
-                storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date(),user));
+                storageFileRepository.save(new StorageFile(file.getOriginalFilename(), file.getSize(), new Date(), user));
                 return new ResponseEntity(HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -81,7 +81,7 @@ public class UserService implements UserDetailsService {
 
     public ResponseEntity<JSONArray> showAllFiles(Integer limit, User user) {
         try {
-            var storageFiles = storageFileRepository.findAllByUser(PageRequest.of(0, limit),user);
+            var storageFiles = storageFileRepository.findAllByUser(PageRequest.of(0, limit), user);
             JSONArray files = new JSONArray();
             for (StorageFile storageFile : storageFiles) {
                 JSONObject file = new JSONObject();
@@ -141,7 +141,7 @@ public class UserService implements UserDetailsService {
         return new ResponseEntity<StorageFile>(HttpStatus.OK);
     }
 
-    public Optional<User> findByUserName(String username){
+    public Optional<User> findByUserName(String username) {
         return userRepository.findByUserName(username);
     }
 }

@@ -33,11 +33,16 @@ public class StorageFile {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public StorageFile(String name, Long size, Date changeDate,User user) {
+    public StorageFile(String name, Long size, Date changeDate, User user) {
         this.name = name;
         this.size = size;
         this.changeDate = changeDate;
         this.user = user;
     }
 
+    public StorageFile(String name, long size, Date changeDate) {
+        this.name = name;
+        this.size = size;
+        this.changeDate = changeDate;
+    }
 }
