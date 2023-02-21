@@ -34,7 +34,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Get authorization header and validate
         //To skip OncePerRequestFilter for authenticate endpoint
         final String header = request.getHeader("auth-token");
-//      final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!hasText(header) || !header.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;

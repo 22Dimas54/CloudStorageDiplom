@@ -1,9 +1,9 @@
 package ru.netology.diplom.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -54,7 +54,8 @@ public class AdminController {
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        var user = userService.findByUserName(auth.getName()).get();
+        ModelMapper modelMapper = new ModelMapper();
+        User user = modelMapper.map(auth.getPrincipal(), ru.netology.diplom.entity.User.class);
         return userService.uploadFile(file, user);
     }
 
@@ -62,7 +63,8 @@ public class AdminController {
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<JSONArray> showAllFiles(@RequestParam("limit") Integer limit) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        var user = userService.findByUserName(auth.getName()).get();
+        ModelMapper modelMapper = new ModelMapper();
+        User user = modelMapper.map(auth.getPrincipal(), ru.netology.diplom.entity.User.class);
         return userService.showAllFiles(limit, user);
     }
 
@@ -102,5 +104,3 @@ public class AdminController {
         }
     }
 }
-////admin
-////write

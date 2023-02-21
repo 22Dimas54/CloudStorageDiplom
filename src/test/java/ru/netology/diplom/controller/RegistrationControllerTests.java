@@ -13,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.netology.diplom.service.UserService;
 
 @RunWith(SpringRunner.class)
-
 public class RegistrationControllerTests {
 
     @MockBean
